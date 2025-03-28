@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: mysql_db_new  # เปลี่ยนชื่อคอนเทนเนอร์
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pixelstore_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "8701:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - pixelstore_network
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_new  # เปลี่ยนชื่อคอนเทนเนอร์
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8700:80"
+    depends_on:
+      - db
+    networks:
+      - pixelstore_network
+    restart: always
+
+
+networks:
+  pixelstore_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

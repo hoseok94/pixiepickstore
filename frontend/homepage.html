@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixiePick - ร้านเครื่องเขียนพิกเซล</title>
+    <link rel="stylesheet" href="styleshome.css">
+</head>
+<body>
+    <a href="register/register.html" class="btn btn-primary">Register</a>
+    <a href="login/login.html" class="btn btn-secondary">Login</a>
+    <header>
+        <h1> PixiePick </h1>
+        <nav>
+            <ul>
+                <li><a href="#">หน้าหลัก</a></li>
+                <li><a href="#">สินค้า</a></li>
+                <li><a href="#">ตะกร้า</a></li>
+                <li><a href="login/login.html">เข้าสู่ระบบ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2> โลกแห่งพิกเซลแฟนตาซี รอคุณอยู่! </h2>
+            <p>ร่ายเวทย์มนตร์แห่งพิกเซล เสกความน่ารักให้วันของคุณ </p>
+            <button onclick="scrollToProducts()"> เลือกซื้อเลย!</button>
+        </section>
+
+        <section class="product-container" id="products">
+            <!-- รายการสินค้าจะแสดงที่นี่ -->
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 PixiePick | สร้างสรรค์ไอเท็มแห่งความฝัน ✨</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="homepage.js"></script>
+</body>
+</html>
