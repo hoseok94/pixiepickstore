@@ -1,79 +1,136 @@
-/* 🌈 พื้นหลังธีมแฟรี่พิกเซล */
+/* 🌈 พื้นหลังธีม Fairy Pixel */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background: url('../img/fairy-bg.png') repeat;
+    background: url('img/bg.jpg') repeat;
+    background-size: cover; 
+    background-color: #FFF5C8; /* ครีมพาสเทล */
     color: #333;
 }
 
 /* 🎀 หัวเว็บ */
 header {
-    background: linear-gradient(90deg, #ff85a2, #ffc3a0);
-    padding: 15px;
-    text-align: center;
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(90deg, #F8C8DC,rgb(219, 244, 255)); /* ชมพู & ฟ้าพาสเทล */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
 }
 
+/* โลโก้และเมนูตรงกลาง */
+.logo-and-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.logo-and-menu h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 36px;
+    color:rgb(255, 238, 161); /* ครีมพาสเทล */
+    text-shadow: 2px 2px 6px #D8BFD8; /* เงาม่วงลาเวนเดอร์ */
+    margin-bottom: 20px;
+}
+
+/* เมนู */
 nav ul {
     list-style: none;
     padding: 0;
+    margin: 0;
     display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-nav ul li {
-    display: inline;
+    gap: 25px;
 }
 
 nav ul li a {
-    color: white;
+    font-size: 18px;
+    color:rgb(255, 250, 230);
     text-decoration: none;
     font-weight: bold;
-    transition: 0.3s;
+    transition: 0.3s ease;
 }
 
 nav ul li a:hover {
-    text-shadow: 0px 0px 5px #fff;
+    text-shadow: 0px 0px 8pxrgb(209, 174, 250);
 }
 
-/* 🎠 ปุ่ม */
-button {
-    background: #ff5e78;
-    color: white;
-    border: none;
+/* 🌟 ปุ่มสมัครสมาชิก/เข้าสู่ระบบ */
+.auth-buttons {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
     padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
+    border-radius: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: transform 0.3s ease, background 0.3s ease;
 }
 
-button:hover {
-    background: #ff3a57;
+/* ปุ่มหลัก */
+.btn-primary {
+    background: #F8C8DC;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #FFAACF;
+    transform: scale(1.1);
+}
+
+/* ปุ่มรอง */
+.btn-secondary {
+    background:rgb(158, 226, 253);
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background:rgb(137, 208, 255);
+    color: white;
+    transform: scale(1.1);
 }
 
 /* 🧚‍♀️ แบนเนอร์ */
 .hero {
+    margin-top: 50px; /* ลดจาก 100px เป็น 60px */
     text-align: center;
-    background: url('../img/magic-banner.png') no-repeat center;
-    background-size: cover;
-    padding: 60px 20px;
+    padding: 50px 20px;
     color: white;
     font-size: 24px;
 }
 
-.hero h2 {
-    text-shadow: 2px 2px 5px #ff85a2;
+/* เพิ่มเงาให้ตัวอักษรชัดขึ้น */
+.hero h2, .hero p {
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5); /* เพิ่มเงาดำให้ตัวอักษร */
 }
 
+
+/* ปุ่มในแบนเนอร์ */
 .hero button {
     margin-top: 15px;
     font-size: 18px;
+    background: linear-gradient(90deg,rgb(172, 154, 219), #AEE2FF); /* ไล่ระดับสีม่วงไวโอเลตกับฟ้าเบบี้บลู */
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 3px 3px 10px rgba(160, 132, 232, 0.5);
 }
+
+.hero button:hover {
+    background: linear-gradient(90deg, #907AD6, #8CCFF7); /* เปลี่ยนสีให้สดขึ้นเมื่อชี้ */
+    transform: scale(1.05);
+    box-shadow: 4px 4px 15px rgba(144, 122, 214, 0.7);
+}
+
 
 /* 📦 รายการสินค้า */
 .product-container {
@@ -85,9 +142,10 @@ button:hover {
 }
 
 .product-card {
-    background: white;
+    background: #FFFAF4; /* ขาวมุก */
     padding: 15px;
     border-radius: 12px;
+    border: 2px solid #D8BFD8; /* ขอบม่วงลาเวนเดอร์ */
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 200px;
@@ -116,7 +174,7 @@ button:hover {
 
 /* 🛒 ตะกร้าสินค้า */
 #cart {
-    background: #fff;
+    background: #FFF5C8;
     padding: 15px;
     margin: 20px;
     border-radius: 10px;
@@ -124,10 +182,11 @@ button:hover {
 }
 
 #cart h2 {
-    color: #ff5e78;
+    color: #F8C8DC; /* ชมพูพาสเทล */
 }
 
 #cartList {
     list-style: none;
     padding: 0;
 }
+

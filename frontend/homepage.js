@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await loadProducts();
-    setupCart();
+    await setupCart();
 });
 
 // 📦 โหลดสินค้าจากเซิร์ฟเวอร์
@@ -8,7 +8,7 @@ async function loadProducts() {
     try {
         const response = await fetch("http://localhost:8000/products");
         if (!response.ok) throw new Error("โหลดสินค้าล้มเหลว");
-        
+
         const products = await response.json();
         const productList = document.getElementById("productList");
         productList.innerHTML = "";
@@ -17,7 +17,7 @@ async function loadProducts() {
             const productCard = document.createElement("div");
             productCard.classList.add("product-card");
             productCard.innerHTML = `
-                <img src="${product.image}" alt="${product.name}">
+                <img src="${product.img_url}" alt="${product.name}">
                 <h3>${product.name}</h3>
                 <p>${product.price} THB</p>
                 <button onclick="addToCart(${product.id}, '${product.name}', ${product.price})">🛒 หยิบใส่ตะกร้า</button>
@@ -30,22 +30,22 @@ async function loadProducts() {
 }
 
 // 🛒 จัดการระบบตะกร้าสินค้า
-function setupCart() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+async function setupCart() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
     updateCartUI(cart);
 }
 
 // ➕ เพิ่มสินค้าไปยังตะกร้า
 function addToCart(id, name, price) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    
+
     const existingProduct = cart.find(item => item.id === id);
     if (existingProduct) {
         existingProduct.quantity += 1;
     } else {
         cart.push({ id, name, price, quantity: 1 });
     }
-    
+
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartUI(cart);
 }
@@ -53,6 +53,8 @@ function addToCart(id, name, price) {
 // 🔄 อัปเดต UI ของตะกร้า
 function updateCartUI(cart) {
     const cartList = document.getElementById("cartList");
+    if (!cartList) return; // ป้องกัน error ถ้ายังไม่มี element นี้ใน DOM
+
     cartList.innerHTML = "";
 
     cart.forEach(item => {
@@ -62,8 +64,7 @@ function updateCartUI(cart) {
     });
 }
 
-// ⏬ เลื่อนลงไปยังสินค้า (เอาจากโค้ดเก่ามาเพิ่ม)
+// ⏬ เลื่อนลงไปยังสินค้า
 function scrollToProducts() {
-    document.getElementById("products").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("productList").scrollIntoView({ behavior: "smooth" });
 }
-
