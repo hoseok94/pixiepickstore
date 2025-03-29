@@ -13,9 +13,9 @@
             <h1>PixiePick</h1>
             <nav>
                 <ul>
-                    <li><a href="#">หน้าหลัก</a></li>
-                    <li><a href="#">สินค้า</a></li>
-                    <li><a href="#">ตะกร้า</a></li>
+                    <li><a href="#homeSection">หน้าหลัก</a></li> <!-- เพิ่ม href ตาม id ของแต่ละส่วน -->
+                    <li><a href="#productSection">สินค้า</a></li> <!-- เพิ่ม href ตาม id ของแต่ละส่วน -->
+                    <li><a href="#cartSection">ตะกร้า</a></li> <!-- เพิ่ม href ตาม id ของแต่ละส่วน -->
                     <li><a href="login/login.html">เข้าสู่ระบบ</a></li>
                 </ul>
             </nav>
@@ -27,24 +27,36 @@
     </header>
 
     <main>
-        <section class="hero">
-            <h2> โลกแห่งพิกเซลแฟนตาซี รอคุณอยู่! </h2>
-            <p>ร่ายเวทย์มนตร์แห่งพิกเซล เสกความน่ารักให้วันของคุณ </p>
-            <button onclick="scrollToProducts()"> เลือกซื้อเลย!</button>
+        <!-- หน้าหลัก -->
+        <section class="hero" id="homeSection">
+            <h2>โลกแห่งพิกเซลแฟนตาซี รอคุณอยู่!</h2>
+            <p>ร่ายเวทย์มนตร์แห่งพิกเซล เสกความน่ารักให้วันของคุณ</p>
+            <button onclick="scrollToProducts()">เลือกซื้อเลย!</button>
         </section>
+        <div id="sidebar">
+            <button id="closeSidebar" class="btn btn-danger">ปิด</button>
+            <section id="userProfile">
+                <h2>ข้อมูลผู้ใช้</h2>
+                <div id="userInfo"></div>
+                <button id="logout" class="btn btn-danger">ออกจากระบบ</button>
+            </section>
+        </div>
+        <button id="openSidebar" class="btn btn-primary">เปิดข้อมูลผู้ใช้</button>
 
         <!-- สินค้า -->
-        <section class="product-container" id="productList">
-            <!-- รายการสินค้าจะแสดงที่นี่ -->
-        </section>
+        <section class="product-container" id="productList"></section>
 
         <!-- ตะกร้าสินค้า -->
         <section id="cartSection">
             <h2>ตะกร้าสินค้าของคุณ</h2>
-            <ul id="cartList">
-                <!-- รายการสินค้าตะกร้าจะแสดงที่นี่ -->
-            </ul>
+            <ul id="cartList"></ul>
+            <div>
+                <p>ราคารวม: <span id="totalPrice">0</span> THB</p>
+            </div>
+            <button id="checkoutButton">ชำระเงิน</button> <!-- ปุ่มชำระเงิน -->
         </section>
+    
+        <script src="homepage.js"></script>
     </main>
 
     <footer>
@@ -52,7 +64,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="homepage.js"></script>
 </body>
 </html>
 

@@ -1,11 +1,12 @@
 document.getElementById("registerForm").addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const username = document.getElementById("username").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    const firstname = document.getElementById("firstname").value;
+    const lastname = document.getElementById("lastname").value;
 
-    if (!username || !email || !password) {
+    if (!email || !password || !firstname || !lastname) {
         alert("กรุณากรอกข้อมูลให้ครบถ้วน");
         return;
     }
@@ -16,7 +17,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify({ email, password, firstname, lastname }),
         });
 
         const result = await response.json();
@@ -32,4 +33,3 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
     }
 });
-

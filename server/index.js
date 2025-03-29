@@ -86,28 +86,7 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
-// 🚀 API แก้ไขโปรไฟล์
-app.put('/users/:id/profile', async (req, res) => {
-  const { id } = req.params;
-  const { age, gender, interests, description, payment_method } = req.body;
-
-  if (!age || !gender || !payment_method) {
-    return res.status(400).json({ message: 'Age, gender, and payment method are required' });
-  }
-
-  try {
-    const [results] = await conn.query(
-      'UPDATE users SET age = ?, gender = ?, interests = ?, description = ?, payment_method = ? WHERE id = ?',
-      [age, gender, JSON.stringify(interests), description, payment_method, id]
-    );
-
-    res.json({ message: 'Profile updated successfully', data: results });
-  } catch (error) {
-    res.status(500).json({ message: 'Something went wrong', errorMessage: error.message });
-  }
-});
-
-// 🚀 API เพิ่มสินค้า (พร้อมอัปโหลดรูปภาพ)
+// 🚀 API เพิ่มสินค้า
 app.post('/products', upload.single('image'), async (req, res) => {
   const { name, description, price, stock } = req.body;
   const img_url = req.file ? req.file.filename : 'default.png'; // ถ้าไม่มีรูป ใช้ default.png
@@ -124,7 +103,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
   }
 });
 
-// 🚀 API ดึงสินค้าทั้งหมด (พร้อมรูปภาพ)
+// 🚀 API ดึงสินค้าทั้งหมด
 app.get('/products', async (req, res) => {
   try {
     const [products] = await conn.query('SELECT id, name, description, price, stock, img_url FROM products');
@@ -140,31 +119,34 @@ app.get('/products', async (req, res) => {
   }
 });
 
-// 🚀 API เพิ่มสินค้าเข้าตะกร้า
-app.post("/cart", async (req, res) => {
-  const { user_id, product_id, quantity } = req.body;
+// 🚀 API สร้างคำสั่งซื้อ
+app.post("/orders", async (req, res) => {
+  const { user_id, items, total_price } = req.body;
 
-  if (!user_id || !product_id || !quantity) {
-    return res.status(400).json({ message: "User, product, and quantity are required" });
+  if (!user_id || !items || !total_price) {
+    return res.status(400).json({ message: "user_id, items, and total_price are required" });
   }
 
   try {
-    const [userCheck] = await conn.query("SELECT * FROM users WHERE id = ?", [user_id]);
-    if (userCheck.length === 0) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const [productCheck] = await conn.query("SELECT * FROM products WHERE id = ?", [product_id]);
-    if (productCheck.length === 0) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    const [results] = await conn.query(
-      "INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)",
-      [user_id, product_id, quantity]
+    // สร้างคำสั่งซื้อ
+    const [orderResults] = await conn.query(
+      "INSERT INTO orders (user_id, total_price, status) VALUES (?, ?, ?)",
+      [user_id, total_price, 'pending']
     );
 
-    res.json({ message: "Product added to cart", cartId: results.insertId });
+    // บันทึกสินค้าที่อยู่ในคำสั่งซื้อ
+    const orderId = orderResults.insertId;
+
+    const orderItems = items.map(item => [
+      orderId, item.id, item.quantity, item.price
+    ]);
+
+    await conn.query(
+      "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ?",
+      [orderItems]
+    );
+
+    res.json({ message: "Order created successfully" });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", errorMessage: error.message });
   }
