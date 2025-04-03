@@ -7,6 +7,14 @@ body {
     background-size: cover;
     background-color: #FFF5C8;
     color: #333;
+    background-size: 100% auto;
+}
+
+/* แก้ไขส่วน media query ที่เคยอยู่ในแท็ก body */
+@media (max-width: 768px) {
+    body {
+        background-size: auto 100%;
+    }
 }
 
 /* 🎀 หัวเว็บ */
@@ -14,8 +22,9 @@ header {
     background: linear-gradient(90deg, #F8C8DC, rgb(219, 244, 255));
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 15px 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
@@ -27,7 +36,6 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
 }
 
 .logo-and-menu h1 {
@@ -61,12 +69,10 @@ nav ul li a:hover {
 
 /* 🌟 ปุ่มสมัครสมาชิก/เข้าสู่ระบบ */
 .auth-buttons {
-    position: fixed;
-    top: 10px;
-    right: 20px;
     display: flex;
     gap: 10px;
-    z-index: 1001;
+    align-items: center;
+    margin-top: 15px;
 }
 
 .btn {
@@ -76,6 +82,7 @@ nav ul li a:hover {
     text-decoration: none;
     transition: transform 0.3s ease, background 0.3s ease;
     cursor: pointer;
+    border: none;
 }
 
 /* ปุ่มหลัก */
@@ -101,97 +108,71 @@ nav ul li a:hover {
     transform: scale(1.1);
 }
 
-/* Sidebar */
-#sidebar {
+.menu-toggle {
+    display: block; /* เพื่อให้แสดงปุ่มเสมอ */
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 2000;
+    position: absolute;
+    top: 15px; /* ระยะห่างทั่วไป */
+    right: 15px; /* ระยะห่างทั่วไป */
+}
+
+/* การปรับสำหรับอุปกรณ์มือถือ */
+@media (max-width: 768px) {
+    .menu-toggle {
+        top: 10px; /* ลดระยะห่างสำหรับหน้าจอขนาดเล็ก */
+        right: 10px;
+    }
+}
+
+/* การปรับสำหรับอุปกรณ์ขนาดใหญ่ (โน้ตบุ๊ก) */
+@media (min-width: 769px) {
+    .menu-toggle {
+        top: 15px; /* ระยะห่างมาตรฐาน */
+        right: 15px; 
+    }
+}
+
+
+.menu-toggle:hover {
+    color: #FF5E78;
+}
+
+/* เมนูที่แสดงเมื่อคลิกแฮมเบอร์เกอร์ */
+.profile-menu {
     position: fixed;
     top: 0;
     right: -400px;
-    width: 300px;
+    background: rgba(255, 255, 255, 0.95);
+    width: 250px;
     height: 100%;
-    background: linear-gradient(120deg, #FFF5C8, #FFE4E1);
-    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
     padding: 20px;
-    transition: right 0.4s ease;
-    z-index: 1001;
-    overflow-y: auto;
-    border-left: 1px solid rgba(255, 182, 193, 0.3);
+    box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 1001; /* แน่ใจว่าอยู่ใต้ menu-toggle */
 }
 
-/* When Sidebar is shown */
-#sidebar.show {
+.profile-menu.visible {
     right: 0;
-}
-
-/* ปุ่มเปิด Sidebar */
-#openSidebar {
-    position: fixed;
-    top: 20px;
-    right: 80px;
-    background: #FF5E78;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    border: none;
-    box-shadow: 0 4px 10px rgba(255, 94, 120, 0.5);
-    cursor: pointer;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-#openSidebar:hover {
-    transform: scale(1.1);
-    background-color: #FF2A4D;
-}
-
-/* ปุ่มปิด Sidebar */
-#closeSidebar {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #FF5E78;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(255, 94, 120, 0.5);
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-#closeSidebar:hover {
-    background-color: #FF2A4D;
-    transform: scale(1.1);
-}
-
-/* ข้อมูลผู้ใช้ใน Sidebar */
-#userInfo {
-    font-size: 18px;
-    color: #333;
-    margin-top: 15px;
-}
-
-#userInfo p {
-    margin: 10px 0;
-    line-height: 1.5;
-}
-
-#userInfo p span {
-    font-weight: bold;
-    color: #5DA4FF;
 }
 
 /* 🧚‍♀️ แบนเนอร์ */
 .hero {
-    margin-top: 50px;
+    margin: 50px auto;
     text-align: center;
     padding: 50px 20px;
     color: white;
     font-size: 24px;
-    background: rgba(255, 182, 193, 0.8);
+    background: rgba(255, 182, 193, 0.6);
     border-radius: 15px;
+    max-width: 1000px;
 }
 
-/* เพิ่มเงาให้ตัวอักษร */
 .hero h2, .hero p {
     text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
 }
@@ -215,8 +196,21 @@ nav ul li a:hover {
     transform: scale(1.05);
     box-shadow: 4px 4px 15px rgba(144, 122, 214, 0.7);
 }
+/* หัวข้อส่วนต่างๆ */
+section h2 {
+    text-align: center;
+    margin: 40px 0 20px;
+    font-family: 'Press Start 2P', cursive;
+    color:rgb(255, 255, 255);
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
 
 /* 📦 รายการสินค้า */
+.products {
+    padding: 20px;
+}
+
 .product-container {
     display: flex;
     flex-wrap: wrap;
@@ -225,53 +219,100 @@ nav ul li a:hover {
     padding: 20px;
 }
 
+/* การ์ดสินค้า */
 .product-card {
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between; 
     background: #FFFAF4;
     padding: 15px;
     border-radius: 12px;
     border: 2px solid #D8BFD8;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 200px;
-    transition: transform 0.3s ease-in-out;
+    align-items: center;
+    width: 200px; /* คงขนาดความกว้าง */
+    transition: transform 0.3s ease-in-out; /* คงค่า transform ไว้ */
 }
 
 .product-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.05); /* ขยายการ์ดเล็กน้อยเมื่อ hover */
 }
 
+/* รูปภาพสินค้า */
 .product-card img {
     width: 100%;
-    border-radius: 8px;
+    max-width: 180px;
+    height: auto;
+    object-fit: cover; 
+    border-radius: 8px; 
+    margin: 0 auto; 
+    display: block;
 }
 
+
+/* ชื่อสินค้า */
 .product-card h3 {
     font-size: 18px;
     margin: 10px 0;
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between; 
+    align-items: center; 
 }
 
+/* ราคา */
 .product-card p {
     font-size: 16px;
     color: #ff5e78;
     font-weight: bold;
 }
 
+/* ปุ่ม */
+.product-card button {
+    display: inline-block; /* ทำให้ปุ่มจัดชิดและจัดเรียงง่าย */
+    background-color: #F8C8DC;
+    color: white;
+    padding: 10px 15px; /* เพิ่มพื้นที่ภายในปุ่ม */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px; /* กำหนดขนาดตัวอักษร */
+    font-weight: bold;
+    transition: transform 0.3s ease, background-color 0.3s ease; /* เพิ่มเอฟเฟกต์ */
+    width: 100%; /* ทำให้ปุ่มเต็มความกว้างของการ์ด */
+    margin-top: 10px; /* เพิ่มระยะห่างด้านบนของปุ่ม */
+    text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+}
+
+/* ปรับเมื่อ hover */
+.product-card button:hover {
+    background-color: #FFAACF;
+    transform: scale(1.05);
+}
+
+
+
 /* 🛒 ตะกร้าสินค้า */
 #cartSection {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
+    background: hsla(182, 43.90%, 69.20%, 0.90);
+    padding: 30px;
     margin: 40px auto;
     border-radius: 15px;
     max-width: 800px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    font-family: 'Poppins', sans-serif;
 }
 
 /* รายการสินค้าในตะกร้า */
+#cartList {
+    list-style: none;
+    padding: 0;
+}
+
 #cartList li {
     display: flex;
     justify-content: space-between;
-    padding: 12px;
+    padding: 12px 15px;
     margin-bottom: 12px;
     background: #FFFAF4;
     border-radius: 8px;
@@ -281,72 +322,365 @@ nav ul li a:hover {
     color: #333;
 }
 
-/* ชื่อสินค้าหรือรายละเอียด */
-#cartList li .product-name {
-    font-weight: bold;
-    color: #FF5E78;
-}
-
-/* ราคาสินค้า */
-#cartList li .product-price {
-    color: #5DA4FF;
-}
-
-/* ปุ่มลบสินค้า */
-#cartList li button {
-    background: #FF5E78;
-    color: white;
-    font-size: 14px;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-#cartList li button:hover {
-    background: #FF2A4D;
-}
-
-/* 🛒 ปุ่มเพิ่ม/ลบสินค้า */
-.cart-item-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.cart-item-buttons button {
-    background-color: #F8C8DC;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.cart-item-buttons button:hover {
-    background-color: #FFAACF;
-    transform: scale(1.1);
-}
-
-.cart-item-buttons button:disabled {
-    background-color: #D8BFD8;
-    cursor: not-allowed;
-}
-
 /* รวมราคาทั้งหมด */
 #totalPriceSection {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 18px;
     margin-top: 20px;
-    padding-top: 10px;
+    padding-top: 15px;
     border-top: 2px solid #F8C8DC;
 }
 
 #totalPriceSection span {
     font-weight: bold;
     color: #FF5E78;
+}
+
+#checkoutButton {
+    background: linear-gradient(90deg, #FF5E78, #FF8BA0);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.3s ease; /* คงค่า transform ไว้ */
+}
+
+#checkoutButton:hover {
+    transform: scale(1.05); /* คงค่า transform ไว้ */
+    background: linear-gradient(90deg, #FF4567, #FF768E);
+}
+
+/* ปุ่มออกจากระบบและแก้ไขโปรไฟล์ */
+#editProfileBtn, #logoutBtn , #userDetails {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 10px;
+    background-color:rgb(213, 122, 255);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease; /* คงค่า transform ไว้ */
+}
+
+#editProfileBtn:hover, #logoutBtn:hover , #userDetails:hover {
+    background-color:rgb(224, 38, 209);
+    transform: scale(1.02); /* คงค่า transform ไว้ */
+}
+
+#userProfile {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    position: relative;
+}
+#userProfile h2 {
+    color: #333;
+}
+#userProfile p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* ข้อมูลผู้ใช้ในเมนู */
+#userInfo {
+    font-size: 16px;
+    color: #333;
+    margin-top: 20px;
+}
+
+#userInfo p {
+    margin: 15px 0;
+    line-height: 1.5;
+}
+
+#userInfo span {
+    font-weight: bold;
+    color: #5DA4FF;
+}
+
+/* การแจ้งเตือนป๊อปอัพ */
+.popup-message {
+    background: linear-gradient(90deg, #F8C8DC, #AEE2FF);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+    font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(50px); }
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(90deg, rgb(219, 244, 255), #F8C8DC);
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    color: #333;
+    font-size: 14px;
+}
+
+/* สินค้าว่างเปล่า */
+.empty-cart {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #999;
+}
+
+/* ปรับการแสดงผลสำหรับหน้าจอขนาดเล็ก */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    .logo-and-menu h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .auth-buttons {
+        position: static;
+        margin-top: 15px;
+    }
+    
+    .menu-toggle {
+        display: block;
+        position: absolute; /* เพิ่มตำแหน่งให้ปุ่มแฮมเบอร์เกอร์ */
+        top: 15px;
+        right: 15px;
+    }
+    
+    nav ul {
+        display: none;
+    }
+    
+    nav.mobile-active ul {
+        display: flex;
+    }
+    
+    .hero {
+        padding: 30px 15px;
+        font-size: 18px;
+    }
+    
+    .hero h2 {
+        font-size: 24px;
+    }
+    
+    .product-card {
+        width: calc(50% - 20px);
+    }
+}
+
+/* เพิ่ม media query สำหรับแท็บเล็ต */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .product-card {
+        width: calc(33% - 20px);
+    }
+    
+    .hero {
+        padding: 40px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        width: 100%;
+    }
+    
+    #cartSection {
+        padding: 15px;
+    }
+    
+    .hero button {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}
+
+/* ส่วนควบคุมสินค้าในตะกร้า */
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qty-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #F8C8DC;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity {
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+.price {
+    margin: 0 8px;
+    font-weight: bold;
+    color: #FF5E78;
+}
+
+.remove-btn {
+    background: #ff8ba0;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.remove-btn:hover {
+    background: #ff5e78;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+/* ปรับสไตล์ปุ่มต่างๆ */
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+/* ปุ่มลิงก์แอดมิน */
+#adminButtonContainer {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+}
+
+.btn-admin {
+    display: inline-block;
+    background-color:rgb(235, 136, 255);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.btn-admin:hover {
+    background-color:rgb(213, 150, 255);
+}
+/* จัดสไตล์ให้ Section */
+#about, #contact {
+    background-color: #f4f4f4; /* สีพื้นหลัง */
+    padding: 40px; /* ระยะห่างรอบข้าง */
+    border-radius: 10px; /* มุมโค้งมน */
+    text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เงาเบาๆ */
+}
+
+/* ปรับแต่งหัวข้อ */
+#about h2, #contact h2 {
+    color: #333; /* สีข้อความ */
+    font-size: 24px; /* ขนาดใหญ่ขึ้น */
+    font-weight: bold; /* ทำให้ตัวหนา */
+}
+
+/* ปรับแต่งข้อความ */
+#about p, #contact p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* เวอร์ชั่น Responsive */
+@media (max-width: 768px) {
+    #about, #contact {
+        padding: 20px;
+    }
+
+    #about h2, #contact h2 {
+        font-size: 20px;
+    }
+
+    #about p, #contact p {
+        font-size: 16px;
+    }
+}
+
+.info-section {
+    margin-top: 50px;
+    padding: 3rem 2rem;
+    background-color: #fff;
+    color: #333;
+    text-align: center;
+}
+
+.info-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #a83268;
+}
+
+.info-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto 1.5rem auto;
+}
+
+.info-section a {
+    color: #d63384;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.info-section a:hover {
+    text-decoration: underline;
 }

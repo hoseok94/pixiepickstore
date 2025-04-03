@@ -1,81 +1,70 @@
-/* 🌈 พื้นหลังธีมแฟรี่พิกเซล */
+/* 🌟 ปรับพื้นหลัง */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background: url('../img/fairy-bg.png') repeat;
-    color: #333;
-}
-
-/* 🎀 หัวเว็บ */
-header {
-    background: linear-gradient(90deg, #ff85a2, #ffc3a0);
-    padding: 15px;
-    text-align: center;
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-nav ul {
-    list-style: none;
-    padding: 0;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7, #fad0c4);
+    background-attachment: fixed;
+    background-size: cover;
+    color: #555;
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 20px;
+    min-height: 100vh;
 }
 
-nav ul li {
-    display: inline;
+/* 🎀 ปรับกล่องฟอร์ม */
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    max-width: 400px; /* จำกัดขนาดให้พอดี */
+    width: 90%; /* ป้องกันการล้นขอบ */
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    text-align: center;
 }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
+/* 🏷 ปรับตัวหนังสือ */
+.container label {
+    font-weight: 600;
+    color: #444;
+    text-align: left; /* จัดให้อยู่ฝั่งซ้าย */
+    display: block;
 }
 
-nav ul li a:hover {
-    text-shadow: 0px 0px 5px #fff;
+/* 🔤 ปรับอินพุตให้ดูสมดุล */
+.container input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 2px solid #ff85a2;
+    border-radius: 10px;
+    transition: border-color 0.3s;
+}
+
+.container input:focus {
+    border-color: #ee9ca7;
+    outline: none;
 }
 
 /* 🎠 ปุ่ม */
 button {
-    background: #ff5e78;
+    width: 100%; /* ป้องกันการเบี้ยว */
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #ff85a2, #ff5e78);
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 button:hover {
     background: #ff3a57;
-}
-
-/* 🔑 ฟอร์มล็อกอิน */
-.login-container {
-    background: white;
-    max-width: 350px;
-    margin: 40px auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.login-container label {
-    display: block;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.login-container input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    transform: translateY(-3px);
+    box-shadow: 0px 0px 10px rgba(255, 58, 87, 0.8);
 }

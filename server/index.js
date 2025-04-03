@@ -10,18 +10,16 @@ const port = 8000;
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/uploads', express.static('uploads')); // ให้โฟลเดอร์ uploads สามารถเข้าถึงได้จากเว็บ
+app.use('/uploads', express.static('uploads'));
 
-// ตั้งค่าการอัปโหลดไฟล์
 const storage = multer.diskStorage({
-  destination: 'uploads/', // เก็บไฟล์ในโฟลเดอร์ uploads
+  destination: 'uploads/',
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // ตั้งชื่อไฟล์ใหม่ไม่ให้ซ้ำ
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 const upload = multer({ storage });
 
-// เชื่อมต่อฐานข้อมูล
 let conn = null;
 const initMySQL = async () => {
   conn = await mysql.createConnection({
@@ -33,7 +31,7 @@ const initMySQL = async () => {
   });
 };
 
-// 🚀 API ลงทะเบียน
+// ลงทะเบียน
 app.post("/users/register", async (req, res) => {
   const { email, password, firstname, lastname } = req.body;
 
@@ -43,7 +41,6 @@ app.post("/users/register", async (req, res) => {
 
   try {
     const [userResults] = await conn.query("SELECT * FROM users WHERE email = ?", [email]);
-
     if (userResults.length > 0) {
       return res.status(400).json({ message: "Email already exists" });
     }
@@ -59,7 +56,7 @@ app.post("/users/register", async (req, res) => {
   }
 });
 
-// 🚀 API ล็อกอิน
+// ล็อกอิน
 app.post("/users/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -86,10 +83,54 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
-// 🚀 API เพิ่มสินค้า
+// อัปเดตโปรไฟล์
+app.post("/users/update", async (req, res) => {
+  const { email, firstname, lastname, age, gender, interests, description, payment_method } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required for updating profile." });
+  }
+
+  try {
+    const [userResults] = await conn.query("SELECT * FROM users WHERE email = ?", [email]);
+    if (userResults.length === 0) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    await conn.query(
+      "UPDATE users SET firstname = ?, lastname = ?, age = ?, gender = ?, interests = ?, description = ?, payment_method = ? WHERE email = ?",
+      [firstname, lastname, age, gender, interests, description, payment_method, email]
+    );
+
+    res.json({ message: "Profile updated successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", errorMessage: error.message });
+  }
+});
+
+// ดึงโปรไฟล์จาก id
+app.get('/users/profile/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    const [userResults] = await conn.query("SELECT * FROM users WHERE id = ?", [id]);
+    if (userResults.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(userResults[0]);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", errorMessage: error.message });
+  }
+});
+
+// เพิ่มสินค้า
 app.post('/products', upload.single('image'), async (req, res) => {
   const { name, description, price, stock } = req.body;
-  const img_url = req.file ? req.file.filename : 'default.png'; // ถ้าไม่มีรูป ใช้ default.png
+  const img_url = req.file ? req.file.filename : 'default.png';
 
   try {
     const [results] = await conn.query(
@@ -103,11 +144,10 @@ app.post('/products', upload.single('image'), async (req, res) => {
   }
 });
 
-// 🚀 API ดึงสินค้าทั้งหมด
+// ดึงสินค้าทั้งหมด
 app.get('/products', async (req, res) => {
   try {
     const [products] = await conn.query('SELECT id, name, description, price, stock, img_url FROM products');
-
     const productsWithImages = products.map(product => ({
       ...product,
       img_url: `http://localhost:8000/uploads/${product.img_url}`
@@ -119,40 +159,153 @@ app.get('/products', async (req, res) => {
   }
 });
 
-// 🚀 API สร้างคำสั่งซื้อ
+// สร้างคำสั่งซื้อ + แก้ไข subtotal
 app.post("/orders", async (req, res) => {
-  const { user_id, items, total_price } = req.body;
-
-  if (!user_id || !items || !total_price) {
-    return res.status(400).json({ message: "user_id, items, and total_price are required" });
-  }
-
   try {
-    // สร้างคำสั่งซื้อ
-    const [orderResults] = await conn.query(
-      "INSERT INTO orders (user_id, total_price, status) VALUES (?, ?, ?)",
-      [user_id, total_price, 'pending']
+    const { user_id, total_price, shipping_address, payment_method, items } = req.body;
+
+    if (!user_id || !total_price || !shipping_address || !payment_method || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "❌ ข้อมูลไม่ครบ หรือไม่มีสินค้าในรายการ" });
+    }
+
+    const [orderResult] = await conn.query(
+      `INSERT INTO orders (user_id, total_price, shipping_address, payment_method, status) 
+       VALUES (?, ?, ?, ?, 'pending')`,
+      [user_id, total_price, shipping_address, payment_method]
     );
 
-    // บันทึกสินค้าที่อยู่ในคำสั่งซื้อ
-    const orderId = orderResults.insertId;
+    const orderId = orderResult.insertId;
 
-    const orderItems = items.map(item => [
-      orderId, item.id, item.quantity, item.price
-    ]);
+    for (const item of items) {
+      const { id: product_id, quantity, price } = item;
+      if (!product_id || !quantity || !price) continue;
 
-    await conn.query(
-      "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ?",
-      [orderItems]
-    );
+      const subtotal = quantity * price;
 
-    res.json({ message: "Order created successfully" });
+      await conn.query(
+        `INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) 
+         VALUES (?, ?, ?, ?, ?)`,
+        [orderId, product_id, quantity, price, subtotal]
+      );
+    }
+
+    res.status(201).json({ message: "✅ Order created with items", orderId });
+
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong", errorMessage: error.message });
+    console.error("❌ สร้างคำสั่งซื้อไม่สำเร็จ:", error);
+    res.status(500).json({ message: "❌ Internal Server Error", errorMessage: error.message });
   }
 });
 
-// 🚀 Start Server
+// Users API
+app.get("/api/all-users", async (req, res) => {
+  try {
+    const [users] = await conn.query("SELECT id, email, firstname AS first_name, lastname AS last_name FROM users");
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching users", error: err.message });
+  }
+});
+
+app.get("/api/search", async (req, res) => {
+  const { query } = req.query;
+  try {
+    let results;
+    if (!isNaN(query)) {
+      [results] = await conn.query("SELECT * FROM users WHERE id = ?", [query]);
+    } else {
+      [results] = await conn.query("SELECT * FROM users WHERE email LIKE ?", [`%${query}%`]);
+    }
+
+    const users = results.map(u => ({
+      id: u.id,
+      email: u.email,
+      first_name: u.firstname,
+      last_name: u.lastname
+    }));
+
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Search error", error: err.message });
+  }
+});
+
+app.get("/api/user/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [rows] = await conn.query("SELECT * FROM users WHERE id = ?", [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const u = rows[0];
+    res.json({
+      id: u.id,
+      email: u.email,
+      first_name: u.firstname,
+      last_name: u.lastname,
+      age: u.age,
+      gender: u.gender,
+      interests: u.interests,
+      description: u.description,
+      payment_method: u.payment_method
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching user", error: err.message });
+  }
+});
+
+app.put("/api/user/:id", async (req, res) => {
+  const { id } = req.params;
+  const { email, first_name, last_name, age, gender, interests, description, payment_method } = req.body;
+  try {
+    await conn.query(
+      "UPDATE users SET email=?, firstname=?, lastname=?, age=?, gender=?, interests=?, description=?, payment_method=? WHERE id=?",
+      [email, first_name, last_name, age, gender, interests, description, payment_method, id]
+    );
+    res.json({ message: "User updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating user", error: err.message });
+  }
+});
+
+app.delete("/api/user/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    await conn.query("DELETE FROM users WHERE id = ?", [id]);
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting user", error: err.message });
+  }
+});
+
+app.get("/api/user/:id/orders", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [orders] = await conn.query(
+      "SELECT id, total_price AS total, status FROM orders WHERE user_id = ?",
+      [id]
+    );
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching orders", error: err.message });
+  }
+});
+
+app.get("/api/check-role", async (req, res) => {
+  const user = req.query.user_id;
+  if (!user) return res.status(400).json({ message: "User ID is required" });
+
+  try {
+    const [rows] = await conn.query("SELECT role FROM users WHERE id = ?", [user]);
+    if (rows.length === 0) return res.status(404).json({ message: "User not found" });
+
+    res.json({ role: rows[0].role });
+  } catch (err) {
+    res.status(500).json({ message: "Error checking role", error: err.message });
+  }
+});
+
 app.listen(port, async () => {
   await initMySQL();
   console.log('Server running on port ' + port);
